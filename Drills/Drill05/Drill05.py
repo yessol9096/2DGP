@@ -6,8 +6,25 @@ grass = load_image('grass.png')
 character = load_image('animation_sheet.png')
 
 def go_to(sx, sy, ex, ey):
+    if (sx < ex):
+        move_right()
+    elif (sx > ex):
+        move_left()
+    if (sy < ey):
+        move_up()
+    elif (sy > ey):
+        move_down()
     pass
-# 여기를 채우세요.
+
+def move_right():
+    pass
+def move_left():
+    pass
+def move_up():
+    pass
+def move_down():
+    pass
+
 while True:
     go_to(203, 535, 132, 243)
     go_to(132, 243, 535, 470)
