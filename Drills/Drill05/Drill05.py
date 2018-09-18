@@ -6,13 +6,13 @@ grass = load_image('grass.png')
 character = load_image('animation_sheet.png')
 
 def go_to(sx, sy, ex, ey):
-    if (sx < ex):
+    if (sx < ex and sy < ey):
         move_right_up(sx, sy, ex, ey)
-    elif (sx > ex):
+    elif (sx < ex and sy > ey):
         move_right_down(sx, sy, ex, ey)
-    if (sy < ey):
+    elif (sx > ex and sy < ey):
         move_left_up(sx, sy, ex, ey)
-    elif (sy > ey):
+    elif (sx > ex and sy > ey):
         move_left_down(sx, sy, ex, ey)
     pass
 
