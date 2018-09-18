@@ -7,22 +7,22 @@ character = load_image('animation_sheet.png')
 
 def go_to(sx, sy, ex, ey):
     if (sx < ex):
-        move_right()
+        move_right(sx, ex)
     elif (sx > ex):
-        move_left()
+        move_left(sx, ex)
     if (sy < ey):
-        move_up()
+        move_up(sy, ey)
     elif (sy > ey):
-        move_down()
+        move_down(sy, ey)
     pass
 
-def move_right():
+def move_right(sx, ex):
     pass
-def move_left():
+def move_left(sx, ex):
     pass
-def move_up():
+def move_up(sy, ey):
     pass
-def move_down():
+def move_down(sy, ey):
     pass
 
 while True:
