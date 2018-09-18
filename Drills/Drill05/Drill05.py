@@ -87,7 +87,7 @@ def move_left_down(sx, sy, ex, ey):
             break
     delay(0.05)
     get_events()
-
+# 완성 
 while True:
     go_to(203, 535, 132, 243)
     go_to(132, 243, 535, 470)
@@ -99,5 +99,6 @@ while True:
     go_to(692, 518, 682, 336)
     go_to(682, 336, 712, 349)
     go_to(712, 349, 203, 535)
+
 close_canvas()
 
