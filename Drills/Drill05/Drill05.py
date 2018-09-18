@@ -87,7 +87,8 @@ def move_left_down(sx, sy, ex, ey):
             break
     delay(0.05)
     get_events()
-# 완성 
+# 완성
+# 유튜브 추가 
 while True:
     go_to(203, 535, 132, 243)
     go_to(132, 243, 535, 470)
