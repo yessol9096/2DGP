@@ -17,8 +17,89 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
-def go_to():
-    pass
+def go_to(sx, sy, ex, ey):
+    if (sx < ex and sy < ey):
+        move_right_up(sx, sy, ex, ey)
+    if (sx < ex and sy > ey):
+        move_right_down(sx, sy, ex, ey)
+    if (sx > ex and sy < ey):
+        move_left_up(sx, sy, ex, ey)
+    if (sx > ex and sy > ey):
+        move_left_down(sx, sy, ex, ey)
+
+
+
+def move_right_up(sx, sy, ex, ey):
+    frame = 0
+    while True:
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        character.clip_draw(frame * 100, 100, 100, 100, sx, sy)
+        update_canvas()
+        frame = (frame + 1) % 8
+        if(sx < ex):
+            sx += 2
+        if(sy < ey):
+            sy += 2
+        delay(0.01)
+        if((sx > ex or sx == ex) and (sy > ey or sy == ey)):
+            break
+    delay(0.05)
+    get_events()
+
+def move_right_down(sx, sy, ex, ey):
+    frame = 0
+    while True:
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        character.clip_draw(frame * 100, 100, 100, 100, sx, sy)
+        update_canvas()
+        frame = (frame + 1) % 8
+        if (sx < ex):
+            sx += 2
+        if (sy > ey):
+            sy -= 2
+        delay(0.01)
+        if ((sx > ex or sx == ex)and (sy < ey or sy == ey)):
+            break
+    delay(0.05)
+    get_events()
+def move_left_up(sx, sy, ex, ey):
+    frame = 0
+    while True:
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        character.clip_draw(frame * 100, 0, 100, 100, sx, sy)
+        update_canvas()
+        frame = (frame + 1) % 8
+        if (sx > ex):
+            sx -= 2
+        if (sy < ey):
+            sy += 2
+        delay(0.01)
+        if ((sx < ex or sx == ex)and (sy > ey or sy == ey)):
+            break
+    delay(0.05)
+    get_events()
+
+def move_left_down(sx, sy, ex, ey):
+    frame = 0
+    while True:
+        clear_canvas()
+        kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+        character.clip_draw(frame * 100, 0, 100, 100, sx, sy)
+        update_canvas()
+        frame = (frame + 1) % 8
+        if (sx > ex):
+            sx -= 2
+        if (sy > ey):
+            sy -= 2
+        delay(0.01)
+        if ((sx < ex or sx == ex)and (sy < ey or sy == ey)):
+            break
+    delay(0.05)
+    get_events()
+
 def draw_cursor():
     pass
 # fill here
@@ -34,7 +115,6 @@ Click = 0
 hide_cursor()
 
 while running:
-    draw_cursor()
     if(Click):
         go_to()
 
