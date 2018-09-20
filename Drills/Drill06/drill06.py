@@ -2,20 +2,29 @@ from pico2d import *
 
 KPU_WIDTH, KPU_HEIGHT = 1280, 1024
 
-
 def handle_events():
     # fill here
     global running
-    global x, y
+    global cursor_x, cursor_y
+    global mouse_x, mouse_y
     global Click
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
         elif event.type == SDL_MOUSEMOTION:
-            x, y = event.x, KPU_HEIGHT -1 - event.y
+            cursor_x, cursor_y = event.x, KPU_HEIGHT -1 - event.y
+        elif event.type == SDL_KEYDOWN and event.type == SDL_MOUSEMOTION:
+            Click = 1
+            mouse_x, mouse_y = event.x, KPU_HEIGHT -1 - event.y
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
+
+
+cursor_x = 0
+cursor_y = 0
+mouse_x = 0
+mouse_y = 0
 
 def go_to(sx, sy, ex, ey):
     if (sx < ex and sy < ey):
@@ -112,7 +121,9 @@ running = True
 x, y = KPU_WIDTH // 2, KPU_HEIGHT // 2
 frame = 0
 Click = 0
-hide_cursor()
+
+
+
 
 while running:
     if(Click):
