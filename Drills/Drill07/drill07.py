@@ -30,12 +30,9 @@ kpu_ground = load_image('KPU_GROUND.png')
 character = load_image('animation_sheet.png')
 
 size = 20
-points = [(random.randint(100, 1180), random.randint(100, 980)) for i in range(size)]
+points = [(random.randint(150, 1180), random.randint(150, 980)) for i in range(size)]
 n = 1
 
 while(1) :
     draw_line(points[n-1],points[n])
     n = (n + 1) % size
-
-
-turtle.done()
