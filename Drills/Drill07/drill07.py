@@ -7,7 +7,12 @@ x, y = KPU_WIDTH // 2, KPU_HEIGHT // 2
 def draw_line(p1, p2):
     frame = 0
     dir = 0
-    if(p1[0] - p2[0] > 0)
+    if(p1[0] - p2[0] > 0) :
+        dir = 0
+    elif(p1[0] - p2[0] < 0)  :
+        dir = 1
+    elif (p1[0] == p2[0]):
+        pass
     for i in range(0, 100 + 1, 2):
         clear_canvas()
         kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
