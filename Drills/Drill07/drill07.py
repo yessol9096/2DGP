@@ -28,7 +28,7 @@ def draw_line(p1, p2):
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
 character = load_image('animation_sheet.png')
-
+# 완성
 size = 20
 points = [(random.randint(150, 1180), random.randint(150, 980)) for i in range(size)]
 n = 1
