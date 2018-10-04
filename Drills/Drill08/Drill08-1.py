@@ -104,6 +104,6 @@ points = [(-300, 200), (400, 350), (300, -300), (-200, -200)]
 
 while(1):
     draw_curve_4_points(points[0], points[1], points[2], points[3])
-
+#완성
 
 turtle.done()
