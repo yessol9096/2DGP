@@ -1,7 +1,7 @@
 from pico2d import *
 import random
 import turtle
-
+# 완성
 KPU_WIDTH, KPU_HEIGHT = 1280, 1024
 
 def draw_big_point(p1, dir):
