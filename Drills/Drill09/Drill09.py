@@ -13,7 +13,8 @@ class Small_Ball:
         self.x, self.y = random.randint(100,700), random.randint(600, 2000)
         self.speed = random.randint(1,20)
     def update(self):
-        self.y -= self.speed
+        if(self.y > 50):
+            self.y -= self.speed
 
     def draw(self):
         self.image.draw(self.x, self.y)
