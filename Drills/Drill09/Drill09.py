@@ -10,8 +10,8 @@ class Grass:
 class Small_Ball:
     def __init__(self):
         self.image = load_image('ball21x21.png')
-        self.x, self.y = random.randint(100,700), random.randint(600, 2000)
-        self.speed = random.randint(1,20)
+        self.x, self.y = random.randint(100,700), 599
+        self.speed = random.randint(5,20)
     def update(self):
         if(self.y > 50):
             self.y -= self.speed
@@ -21,8 +21,8 @@ class Small_Ball:
 class Big_Ball:
     def __init__(self):
         self.image = load_image('ball41x41.png')
-        self.x, self.y = random.randint(100,700), random.randint(600, 2000)
-        self.speed = random.randint(1,20)
+        self.x, self.y = random.randint(100,700), 599
+        self.speed = random.randint(3,20)
 
     def update(self):
         if(self.y > 50):
@@ -57,14 +57,19 @@ small_num = random.randint(1,19)
 bid_num = 20 - small_num
 Small_Ball = [Small_Ball() for i in range(small_num)]
 Big_Ball = [Big_Ball() for i in range(bid_num)]
+ball_speed = 0
 while running:
     for boy in team:
         boy.update()
 
+
     for smallball in Small_Ball:
         smallball.update()
+
+
     for bigball in Big_Ball:
         bigball.update()
+
 
     clear_canvas()
     grass.draw()
@@ -79,3 +84,5 @@ while running:
     delay(0.05)
 
 close_canvas()
+
+#완성
