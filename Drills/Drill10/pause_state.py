@@ -14,13 +14,11 @@ name = "MainState"
 pause_image = None
 
 
-
 class Pause:
     def __init__(self):
         self.image = load_image('pause.png')
-
     def draw(self):
-        self.image.draw(400, 300)
+        self.image.draw_now(400, 300, 100, 100)
 
 
 
@@ -57,6 +55,8 @@ def update():
 
 def draw():
     clear_canvas()
+    main_state.grass.draw()
+    main_state.boy.draw()
     pause_image.draw()
     update_canvas()
 
