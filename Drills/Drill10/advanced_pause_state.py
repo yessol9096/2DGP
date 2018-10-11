@@ -8,7 +8,6 @@ import game_framework
 import title_state
 import main_state
 
-
 name = "MainState"
 
 pause_image = None
@@ -17,9 +16,9 @@ pause_image = None
 class Pause:
     def __init__(self):
         self.image = load_image('pause.png')
+
     def draw(self):
         self.image.draw_now(400, 300, 200, 200)
-
 
 
 def enter():
@@ -29,6 +28,7 @@ def enter():
 
 def exit():
     pass
+
 
 def pause():
     pass
@@ -55,6 +55,10 @@ def update():
 
 def draw():
     clear_canvas()
+
+    main_state.grass.draw()
+    main_state.boy.draw()
+    
     pause_image.draw()
     update_canvas()
 
