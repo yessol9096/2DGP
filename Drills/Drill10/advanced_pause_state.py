@@ -62,7 +62,6 @@ def draw():
     if (clipping > 1.0):
         clipping = 0
         pause_image.draw()
-        print(clipping)
         delay(1.0)
     clipping += 0.01
     update_canvas()
