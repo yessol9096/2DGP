@@ -18,7 +18,7 @@ class Pause:
     def __init__(self):
         self.image = load_image('pause.png')
     def draw(self):
-        self.image.draw_now(400, 300, 100, 100)
+        self.image.draw_now(400, 300, 200, 200)
 
 
 
