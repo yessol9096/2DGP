@@ -52,18 +52,19 @@ def handle_events():
 def update():
     pass
 
-clipping = 1
+
+twinkling = 1
 def draw():
-    global clipping
+    global twinkling
     clear_canvas()
 
     main_state.grass.draw()
     main_state.boy.draw()
-    if (clipping > 1.0):
-        clipping = 0
+    if (twinkling > 1.0):
+        twinkling = 0
         pause_image.draw()
         delay(1.0)
-    clipping += 0.01
+    twinkling += 0.01
     update_canvas()
 
 
