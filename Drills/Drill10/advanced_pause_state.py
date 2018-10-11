@@ -58,7 +58,7 @@ def draw():
 
     main_state.grass.draw()
     main_state.boy.draw()
-    
+
     pause_image.draw()
     update_canvas()
 
