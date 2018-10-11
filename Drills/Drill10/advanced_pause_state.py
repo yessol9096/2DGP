@@ -52,15 +52,23 @@ def handle_events():
 def update():
     pass
 
-
+clipping = 1
 def draw():
+    global clipping
     clear_canvas()
 
     main_state.grass.draw()
     main_state.boy.draw()
-
-    pause_image.draw()
+    if (clipping > 1.0):
+        clipping = 0
+        pause_image.draw()
+        print(clipping)
+        delay(1.0)
+    clipping += 0.01
     update_canvas()
+
+
+
 
 
 
