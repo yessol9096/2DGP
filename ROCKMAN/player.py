@@ -1,3 +1,6 @@
+import random
+
+
 def init():
     pass
 def event():
