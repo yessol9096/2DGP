@@ -9,10 +9,11 @@ import title_state
 import pause_state
 import advanced_pause_state
 
+# png 이미지 가로 6 * 40 세로 7 * 40
 
 name = "MainState"
 
-boy = None
+player = None
 grass = None
 font = None
 
@@ -35,26 +36,26 @@ class Player:
         self.dir = 1
 
     def update(self):
-        self.frame = (self.frame + 1) % 8
-        self.x += self.dir
+        self.frame = (self.frame + 1) % 4
+       
         if self.x >= 800:
-            self.dir = -1
+            self.dir = 6
         elif self.x <= 0:
-            self.dir = 1
+            self.dir = 5
 
     def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+        self.image.clip_draw(self.frame * 40, 6 * 40, 40, 40, self.x, self.y)
 
 
 def enter():
-    global boy, grass
-    boy = Boy()
+    global player, grass
+    player = Player()
     grass = Grass()
 
 
 def exit():
-    global boy, grass
-    del(boy)
+    global player, grass
+    del(player)
     del(grass)
 
 
@@ -68,24 +69,18 @@ def resume():
 
 def handle_events():
     events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_state(title_state)
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_p:
-            game_framework.push_state(advanced_pause_state)
+
 
 
 
 def update():
-    boy.update()
+    player.update()
 
 
 def draw():
     clear_canvas()
     grass.draw()
-    boy.draw()
+    player.draw()
     update_canvas()
 
 
