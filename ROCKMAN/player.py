@@ -32,19 +32,27 @@ class Player:
     def __init__(self):
         self.x, self.y = 0, 90
         self.frame = 0
+        self.frame_y = 6
         self.image = load_image('resource/rockman/rockman240x280.png')
         self.dir = 1
+        self.speed = 1
 
     def update(self):
-        self.frame = (self.frame + 1) % 4
-       
-        if self.x >= 800:
-            self.dir = 6
-        elif self.x <= 0:
-            self.dir = 5
+        pass
+
+    def frame_update(self):
+        self.frame = (self.frame + 1) % 3 + 1
+        if (dir == 1):
+            self.frame_y = 6
+        elif (dir == -1) :
+            self.frame_y = 5
+
+    def walk(self):
+        self.frame_update()
+        self.x += (self.dir) * self.speed
 
     def draw(self):
-        self.image.clip_draw(self.frame * 40, 6 * 40, 40, 40, self.x, self.y)
+        self.image.clip_draw(self.frame * 40,  self.frame_y * 40, 40, 40, self.x , self.y)
 
 
 def enter():
@@ -69,6 +77,16 @@ def resume():
 
 def handle_events():
     events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_RIGHT:
+            player.dir = 1
+            player.walk()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_LEFT:
+            player.dir = -1
+            player.walk()
+
 
 
 
