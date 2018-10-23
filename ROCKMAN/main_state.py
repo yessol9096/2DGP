@@ -8,12 +8,12 @@ import game_framework
 import title_state
 import pause_state
 import advanced_pause_state
-
+from Rockman import Rockman
 
 name = "MainState"
 
-boy = None
-grass = None
+player = None
+
 font = None
 
 
@@ -47,15 +47,14 @@ class Boy:
 
 
 def enter():
-    global boy, grass
-    boy = Boy()
-    grass = Grass()
+    global player
+    player = Rockman()
+
 
 
 def exit():
-    global boy, grass
-    del(boy)
-    del(grass)
+    global player
+    del(player)
 
 
 def pause():
@@ -79,13 +78,12 @@ def handle_events():
 
 
 def update():
-    boy.update()
+    player.update()
 
 
 def draw():
     clear_canvas()
-    grass.draw()
-    boy.draw()
+    player.draw()
     update_canvas()
 
 
