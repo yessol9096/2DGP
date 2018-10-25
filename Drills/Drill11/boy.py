@@ -90,10 +90,9 @@ class RunState:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
 
 class DashState:
-    global DASH_READY
+
     time = 0
-    if(DASH_READY == 1):
-        event = DASH_UP
+
     @staticmethod
     def enter(boy, event):
         if event == RIGHT_DOWN:
@@ -122,7 +121,7 @@ class DashState:
         DashState.timer -= 1
         if DashState.timer == 0:
             boy.add_event(DASH_UP)
-        print(DashState.time)
+
 
 
     @staticmethod
