@@ -3,7 +3,7 @@ from ball import Ball
 
 import game_world
 
-DASH_READY = 0
+
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, DASH_DOWN, DASH_UP = range(8)
 
