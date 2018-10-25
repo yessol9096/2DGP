@@ -110,7 +110,9 @@ class DashState:
     def exit(boy, event):
         if event == SPACE:
             boy.fire_ball()
-
+        if (DashState.time > 0.5):
+            boy.cur_state = RunState
+            DashState.time = 0
     @staticmethod
     def do(boy):
         boy.frame = (boy.frame + 1) % 8
@@ -119,8 +121,7 @@ class DashState:
         boy.x = clamp(25, boy.x, 1600 - 25)
         DashState.time += 0.1
         print(DashState.time)
-        if (DashState.time > 0.5):
-            DashState.time = 0
+
 
     @staticmethod
     def draw(boy):
