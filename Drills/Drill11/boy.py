@@ -3,7 +3,7 @@ from ball import Ball
 
 import game_world
 
-
+DASH_READY = 0
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, DASH_DOWN, DASH_UP = range(8)
 
@@ -89,8 +89,10 @@ class RunState:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
 
 class DashState:
-
+    global DASH_READY
     time = 0
+    if(DASH_READY == 1):
+        event = DASH_UP
     @staticmethod
     def enter(boy, event):
         if event == RIGHT_DOWN:
