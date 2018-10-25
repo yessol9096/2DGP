@@ -104,22 +104,23 @@ class DashState:
         elif event == LEFT_UP:
             boy.velocity += 1
         boy.dir = boy.velocity
+        DashState.timer = 50
 
 
     @staticmethod
     def exit(boy, event):
         if event == SPACE:
             boy.fire_ball()
-        if (DashState.time > 0.5):
-            boy.cur_state = RunState
-            DashState.time = 0
+
     @staticmethod
     def do(boy):
         boy.frame = (boy.frame + 1) % 8
         boy.timer -= 1
         boy.x += (boy.velocity * 3)
         boy.x = clamp(25, boy.x, 1600 - 25)
-        DashState.time += 0.1
+        DashState.timer -= 1
+        if DashState.timer == 0:
+            boy.add_event(DASH_UP)
         print(DashState.time)
 
 
@@ -201,4 +202,10 @@ class Boy:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def change_state(self, state):
+        self.cur_state.exit(self)
+
+        self.cur_state = state
+        self.cur_state.enter(self)
 
