@@ -5,7 +5,7 @@ import start_state
 import pause_state
 import advanced_pause_state
 import main_state
-import player
+import rockman
 pico2d.open_canvas()
 game_framework.run(main_state)
 pico2d.close_canvas()

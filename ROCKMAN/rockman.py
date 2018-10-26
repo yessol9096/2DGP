@@ -11,7 +11,7 @@ import advanced_pause_state
 
 # png 이미지 가로 6 * 40 세로 7 * 40
 
-name = "Roackman"
+name = "Rockman"
 
 font = None
 
