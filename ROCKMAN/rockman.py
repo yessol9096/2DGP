@@ -15,6 +15,8 @@ name = "Rockman"
 
 font = None
 
+#Rockman event
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, DASH_DOWN, DASH_UP = range(8)
 
 
 class Rockman:
