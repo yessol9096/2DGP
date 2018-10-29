@@ -12,6 +12,8 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
+
+
 # Boy Action Speed
 # fill expressions correctly
 TIME_PER_ACTION = 0.5
@@ -110,7 +112,7 @@ class SleepState:
 
     @staticmethod
     def exit(boy, event):
-        pass
+        boy.delete_ghost()
 
     @staticmethod
     def do(boy):
@@ -154,9 +156,13 @@ class Boy:
         game_world.add_object(ball, 1)
 
     def ghost(self):
+        global ghost
         ghost = Ghost(self.x, self.y, self.dir*3)
         game_world.add_object(ghost, 1)
 
+    def delete_ghost(self):
+        global ghost
+        game_world.remove_object(ghost)
 
     def add_event(self, event):
         self.event_que.insert(0, event)
