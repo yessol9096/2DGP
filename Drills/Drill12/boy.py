@@ -16,8 +16,8 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # Boy Action Speed
 # fill expressions correctly
-TIME_PER_ACTION = 0.5
-ACTION_PER_TIME = 1.0/ TIME_PER_ACTION
+TIME_PER_ACTION = 0.5   # 한번 액션하는데 0.5 걸린다
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION    # 시간당 몇번 액션 할 것인가
 FRAMES_PER_ACTION = 8
 
 
@@ -91,7 +91,7 @@ class RunState:
 
     @staticmethod
     def do(boy):
-        boy.frame = (boy.frame + 1) % 8
+        boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         boy.x += boy.velocity * game_framework.frame_time
         boy.x = clamp(25, boy.x, 1600 - 25)
 
