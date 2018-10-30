@@ -10,7 +10,7 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 TIME_PER_CIRCLE = 0.5
-ACTION_PER_TIME = 1.0 / TIME_PER_CIRCLE
+CIRCLE_PER_TIME = 1.0 / TIME_PER_CIRCLE
 FRAMES_PER_DEGREE = 360
 
 TIME_PER_ACTION = 0.5   # 한번 액션하는데 0.5 걸린다
@@ -35,8 +35,6 @@ class Ghost:
 
     def draw(self):
         self.image.opacify(self.opacity)
-        #self.image.scale(self.scale)
-        self.image.scale(10)
         self.image.clip_draw(int(self.frame) * 100, 300, 100, 100, self.x, self.y)
 
     def update(self):
@@ -49,14 +47,16 @@ class Ghost:
         if (wake_up == True):
             self.y += 0.5
             if(self.x < mid_x):
-                self.x += 10.0
+                self.x += 15.0
             else :
-                self.x -= 10.0
+                self.x -= 15.0
             if(self.y > 200) :
                 wake_up=False
         elif (wake_up == False):
+
         #circle
-            self.velocity += (FRAMES_PER_DEGREE * ACTION_PER_TIME * game_framework.frame_time)
+            self.velocity = (self.velocity + FRAMES_PER_DEGREE * CIRCLE_PER_TIME * game_framework.frame_time) % 360
+            print(self.velocity)
             r = (self.velocity) * math.pi / 180
             self.x = boy_x + 3* PIXEL_PER_METER * math.cos(r)
             self.y = boy_y + 3* PIXEL_PER_METER * math.sin(r)
