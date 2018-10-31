@@ -55,8 +55,6 @@ class IdleState:
 
     @staticmethod
     def exit(rockman, event):
-        if event == SPACE:
-            rockman.fire_ball()
         pass
 
     @staticmethod
@@ -88,8 +86,7 @@ class RunState:
 
     @staticmethod
     def exit(rockman, event):
-        if event == SPACE:
-            rockman.fire_ball()
+        pass
 
     @staticmethod
     def do(rockman):
@@ -118,7 +115,7 @@ class Idle_attackState:
         elif event == LEFT_UP:
             rockman.velocity += RUN_SPEED_PPS
         rockman.frame = 0
-        rockman.fire_ball()
+        rockman.attack()
 
     @staticmethod
     def exit(rockman, event):
@@ -149,7 +146,7 @@ class Run_attackState:
             rockman.velocity += RUN_SPEED_PPS
         rockman.dir = clamp(-1, rockman.velocity, 1)
 
-        rockman.fire_ball()
+        rockman.attack()
 
     @staticmethod
     def exit(rockman, event):
@@ -197,7 +194,7 @@ class Rockman:
         self.cur_state.enter(self, None)
 
 
-    def fire_ball(self):
+    def attack(self):
         bullet = Bullet(self.x, self.y, self.dir)
         game_world.add_object(bullet, 1)
 
