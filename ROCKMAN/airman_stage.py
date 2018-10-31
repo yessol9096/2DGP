@@ -12,14 +12,15 @@ from airman_background import Airman_background
 
 name = "MainState"
 
-boy = None
+player = None
 
 def enter():
-    global boy
-    boy = Rockman()
-    grass = Airman_background()
-    game_world.add_object(grass, 0)
-    game_world.add_object(boy, 1)
+    global player
+    player = Rockman()
+    background = Airman_background()
+    background.set_center_object(player)
+    game_world.add_object(background, 0)
+    game_world.add_object(player, 1)
 
 
 def exit():
@@ -41,7 +42,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                 game_framework.quit()
         else:
-            boy.handle_event(event)
+            player.handle_event(event)
 
 
 def update():

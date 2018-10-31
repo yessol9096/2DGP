@@ -23,7 +23,7 @@ FRAMES_PER_ACTION = 5
 
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE, ATTACK, ATTACK_OFF = range(7)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE, ATTACK, ATTACK_OFF, JUMP = range(8)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -32,7 +32,8 @@ key_event_table = {
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
     (SDL_KEYDOWN, SDLK_SPACE): SPACE,
     (SDL_KEYDOWN, SDLK_z): ATTACK,
-    (SDL_KEYUP, SDLK_z): ATTACK_OFF
+    (SDL_KEYUP, SDLK_z): ATTACK_OFF,
+    (SDL_KEYDOWN, SDLK_x): JUMP
 }
 
 
@@ -167,16 +168,54 @@ class Run_attackState:
             rockman.image.clip_draw(40 + int(rockman.frame) * 40, 120, 40, 40, rockman.x, rockman.y, CHAR_SIZE,
                                     CHAR_SIZE)
 
+class JumpState:
+    @staticmethod
+    def enter(rockman, event):
+        if event == RIGHT_DOWN:
+            rockman.velocity += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            rockman.velocity += RUN_SPEED_PPS
+        rockman.frame = 0
+
+    @staticmethod
+    def exit(rockman, event):
+        pass
+
+    @staticmethod
+    def jump(rockman):
+        gap_time = 0.1
+        game_framework.frame_time
+
+    @staticmethod
+    def do(rockman):
+        rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        rockman.x += rockman.velocity * game_framework.frame_time
+        rockman.x = clamp(25, rockman.x, 1600 - 25)
+
+    @staticmethod
+    def draw(rockman):
+        if rockman.dir == 1:
+            rockman.image.clip_draw(160, 240, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+        else:
+            rockman.image.clip_draw(160, 200, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+
+
+
 
 
 
 
 
 next_state_table = {
-    IdleState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState, ATTACK: Idle_attackState, ATTACK_OFF: IdleState},
+    IdleState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState, ATTACK: Idle_attackState, ATTACK_OFF: IdleState, JUMP: JumpState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, SPACE: RunState, ATTACK: Run_attackState, ATTACK_OFF: RunState},
     Idle_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: IdleState,ATTACK: Idle_attackState},
-    Run_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: RunState, ATTACK: Run_attackState}
+    Run_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: RunState, ATTACK: Run_attackState},
+    JumpState: {RIGHT_UP: JumpState, LEFT_UP: JumpState, RIGHT_DOWN: JumpState, LEFT_DOWN: JumpState, ATTACK: JumpState, ATTACK_OFF: JumpState, JUMP: JumpState}
 }
 
 class Rockman:
@@ -186,6 +225,8 @@ class Rockman:
         # Boy is only once created, so instance image loading is fine
         self.image = load_image('resource/rockman/rockman240x280.png')
         self.font = load_font('ENCR10B.TTF', 16)
+        self.canvas_width = 800
+        self.canvas_height = 700
         self.dir = 1
         self.velocity = 0
         self.frame = 0
@@ -193,6 +234,9 @@ class Rockman:
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
 
+
+    def set_background(self, bg):
+        self.bg = bg
 
     def attack(self):
         bullet = Bullet(self.x, self.y, self.dir)
@@ -217,11 +261,12 @@ class Rockman:
             self.cur_state.exit(self, event)
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
-        print(self.cur_state)
+        #self.x = clamp(0, self.x, self.bg.w)
+        #self.y = clamp(0, self.y, self.bg.h)
 
     def draw(self):
         self.cur_state.draw(self)
-        self.font.draw(self.x - 60, self.y + 50, '(Time: %3.2f)' % get_time(), (255,255,0))
+
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
