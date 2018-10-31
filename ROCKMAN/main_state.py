@@ -6,8 +6,8 @@ from pico2d import *
 import game_framework
 import game_world
 
-from boy import Boy
-from grass import Grass
+from rockman import Rockman
+from airman_background import Grass
 
 
 name = "MainState"
@@ -16,7 +16,7 @@ boy = None
 
 def enter():
     global boy
-    boy = Boy()
+    boy = Rockman()
     grass = Grass()
     game_world.add_object(grass, 0)
     game_world.add_object(boy, 1)
