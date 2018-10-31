@@ -1,25 +1,29 @@
-from pico2d import *
-from rockman import Rockman
+import random
+import json
+import os
 
+from pico2d import *
 import game_framework
 import game_world
-import title_state
 
-name = "Airman_Stage"
-
-player = None
+from boy import Boy
+from grass import Grass
 
 
+name = "MainState"
+
+boy = None
 
 def enter():
-    global player
-    player = Rockman()
-    game_world.add_object(player, 1)
+    global boy
+    boy = Boy()
+    grass = Grass()
+    game_world.add_object(grass, 0)
+    game_world.add_object(boy, 1)
 
 
 def exit():
     game_world.clear()
-
 
 def pause():
     pass
@@ -35,15 +39,15 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+                game_framework.quit()
         else:
-            player.handle_event(event)
-
+            boy.handle_event(event)
 
 
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
+    delay(0.01)
 
 
 def draw():
