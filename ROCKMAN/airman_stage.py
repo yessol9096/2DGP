@@ -13,24 +13,10 @@ font = None
 
 grass = None
 
-class Grass:
-    def __init__(self):
-        self.image = load_image('grass.png')
-
-    def draw(self):
-        self.image.draw(400, 30)
-
-    def update(self):
-        pass
-
-
-
 
 def enter():
     global player, grass
     player = Rockman()
-    grass = Grass()
-    game_world.add_object(grass, 0)
     game_world.add_object(player, 1)
 
 
@@ -52,9 +38,9 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_state(title_state)
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_p:
-            game_framework.push_state(advanced_pause_state)
+                game_framework.quit()
+        else:
+            player.handle_event(event)
 
 
 

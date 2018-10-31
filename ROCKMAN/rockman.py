@@ -8,6 +8,7 @@ import game_framework
 import title_state
 import pause_state
 import advanced_pause_state
+import game_world
 
 # png 이미지 가로 6 * 40 세로 7 * 40
 
@@ -39,7 +40,7 @@ class Rockman:
         self.x += (self.dir) * self.speed
 
     def draw(self):
-        self.image.clip_draw(self.frame * 40,  self.frame_y * 40, 40, 40, self.x , self.y)
+        self.image.clip_draw(self.frame * 40,  self.frame_y * 40, 40, 40, self.x , self.y, 150, 150)
         print(self.dir)
 
     def handle_events(self):

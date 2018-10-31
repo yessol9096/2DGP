@@ -6,7 +6,7 @@ from pico2d import *
 
 import game_framework
 import title_state
-import main_state
+import airman_stage
 
 name = "MainState"
 
@@ -58,8 +58,8 @@ def draw():
     global twinkling
     clear_canvas()
 
-    main_state.grass.draw()
-    main_state.boy.draw()
+    airman_stage.grass.draw()
+    airman_stage.boy.draw()
     if (twinkling > 1.0):
         twinkling = 0
         pause_image.draw()
