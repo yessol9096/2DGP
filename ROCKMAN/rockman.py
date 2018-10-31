@@ -139,7 +139,7 @@ next_state_table = {
 class Rockman:
 
     def __init__(self):
-        self.x, self.y = 1600 // 2, 90
+        self.x, self.y = 800 // 2, 350
         # Boy is only once created, so instance image loading is fine
         self.image = load_image('resource/rockman/rockman240x280.png')
         self.font = load_font('ENCR10B.TTF', 16)

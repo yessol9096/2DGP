@@ -7,7 +7,7 @@ import game_framework
 import game_world
 
 from rockman import Rockman
-from airman_background import Grass
+from airman_background import Airman_background
 
 
 name = "MainState"
@@ -17,7 +17,7 @@ boy = None
 def enter():
     global boy
     boy = Rockman()
-    grass = Grass()
+    grass = Airman_background()
     game_world.add_object(grass, 0)
     game_world.add_object(boy, 1)
 

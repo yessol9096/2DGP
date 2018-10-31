@@ -1,6 +1,6 @@
 from pico2d import *
 
-class Grass:
+class Airman_background:
     def __init__(self):
         self.image = load_image('resource/stage/AirManMapBG.png')
 
