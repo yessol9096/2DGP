@@ -1,6 +1,6 @@
 import game_framework
 from pico2d import *
-from ball import Ball
+from bullet import Bullet
 from ghost import Ghost
 import game_world
 
@@ -23,14 +23,16 @@ FRAMES_PER_ACTION = 5
 
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE = range(6)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE, ATTACK, ATTACK_OFF = range(7)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
     (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
-    (SDL_KEYDOWN, SDLK_SPACE): SPACE
+    (SDL_KEYDOWN, SDLK_SPACE): SPACE,
+    (SDL_KEYDOWN, SDLK_z): ATTACK,
+    (SDL_KEYUP, SDLK_z): ATTACK_OFF
 }
 
 
@@ -48,6 +50,7 @@ class IdleState:
             rockman.velocity -= RUN_SPEED_PPS
         elif event == LEFT_UP:
             rockman.velocity += RUN_SPEED_PPS
+
         rockman.timer = get_time()
 
     @staticmethod
@@ -59,8 +62,7 @@ class IdleState:
     @staticmethod
     def do(rockman):
         rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
-        if rockman.timer + 10.0 <= get_time():
-            rockman.add_event(SLEEP_TIMER)
+
 
     @staticmethod
     def draw(rockman):
@@ -103,27 +105,70 @@ class RunState:
             rockman.image.clip_draw(40 + int(rockman.frame) * 40, 200, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
 
-class SleepState:
+class Idle_attackState:
 
     @staticmethod
     def enter(rockman, event):
+        if event == RIGHT_DOWN:
+            rockman.velocity += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            rockman.velocity += RUN_SPEED_PPS
         rockman.frame = 0
-        rockman.ghost()
+        rockman.fire_ball()
 
     @staticmethod
     def exit(rockman, event):
-        rockman.delete_ghost()
+        pass
 
     @staticmethod
     def do(rockman):
-        rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        rockman.x = clamp(25, rockman.x, 1600 - 25)
 
     @staticmethod
     def draw(rockman):
         if rockman.dir == 1:
-            rockman.image.clip_composite_draw(int(rockman.frame) * 100, 100, 100, 100, 3.141592 / 2, '', rockman.x - 25, rockman.y - 25, 100, 100)
+            rockman.image.clip_draw(0, 160, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
         else:
-            rockman.image.clip_composite_draw(int(rockman.frame) * 100, 0, 100, 100, -3.141592 / 2, '', rockman.x + 25, rockman.y - 25, 100, 100)
+            rockman.image.clip_draw(0, 120, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+
+class Run_attackState:
+
+    @staticmethod
+    def enter(rockman, event):
+        if event == RIGHT_DOWN:
+            rockman.velocity += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            rockman.velocity += RUN_SPEED_PPS
+        rockman.dir = clamp(-1, rockman.velocity, 1)
+
+        rockman.fire_ball()
+
+    @staticmethod
+    def exit(rockman, event):
+        pass
+
+    @staticmethod
+    def do(rockman):
+        rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        rockman.x += rockman.velocity * game_framework.frame_time
+        rockman.x = clamp(25, rockman.x, 1600 - 25)
+
+    @staticmethod
+    def draw(rockman):
+        if rockman.dir == 1:
+            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 160, 40, 40, rockman.x, rockman.y, CHAR_SIZE,
+                                    CHAR_SIZE)
+        else:
+            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 120, 40, 40, rockman.x, rockman.y, CHAR_SIZE,
+                                    CHAR_SIZE)
 
 
 
@@ -131,9 +176,10 @@ class SleepState:
 
 
 next_state_table = {
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SPACE: IdleState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: RunState},
-    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState}
+    IdleState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState, ATTACK: Idle_attackState, ATTACK_OFF: IdleState},
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, SPACE: RunState, ATTACK: Run_attackState, ATTACK_OFF: RunState},
+    Idle_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: IdleState,ATTACK: Idle_attackState},
+    Run_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: RunState, ATTACK: Run_attackState}
 }
 
 class Rockman:
@@ -152,8 +198,8 @@ class Rockman:
 
 
     def fire_ball(self):
-        ball = Ball(self.x, self.y, self.dir*3)
-        game_world.add_object(ball, 1)
+        bullet = Bullet(self.x, self.y, self.dir)
+        game_world.add_object(bullet, 1)
 
     def ghost(self):
         global ghost
@@ -174,6 +220,7 @@ class Rockman:
             self.cur_state.exit(self, event)
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
+        print(self.cur_state)
 
     def draw(self):
         self.cur_state.draw(self)
