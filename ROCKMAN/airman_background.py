@@ -3,20 +3,21 @@ from pico2d import *
 class Airman_background:
     def __init__(self):
         self.image = load_image('resource/stage/AirManMapBG.png')
-        self.canvas_width = 800
-        self.canvas_height = 700
+        self.canvas_width = get_canvas_width()
+        self.canvas_height = get_canvas_height()
         self.w = self.image.w
         self.h = self.image.h
+        self.speed = 0
+
     def update(self):
-        self.window_left = clamp(0, int(self.center_object.x) - self.canvas_width//2,
-                                 self.w - self.canvas_width)
-        self.window_bottom = clamp(0, int(self.center_object.y) - self.canvas_width//2,
-                                 self.h - self.canvas_height)
+        self.left = clamp(0, int(self.set_center_object.x) -
+                          self.canvas_width // 2, self.w - self.canvas_width)
 
     def draw(self):
-        self.image.clip_draw_to_origin(0,483,254,237,400,350,self.canvas_width, self.canvas_height)
+        self.image.clip_draw_to_origin(self.left,483,self.canvas_width,
+            self.canvas_height, 0, 0)
 
     def set_center_object(self, player):
-        self.center_object = player
+        self.set_center_object = player
 
 

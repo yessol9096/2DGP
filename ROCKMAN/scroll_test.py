@@ -19,7 +19,6 @@ def enter():
     player = Rockman()
     background = Airman_background()
     background.set_center_object(player)
-    player.set_background(background)
     game_world.add_object(background, 0)
     game_world.add_object(player, 1)
 

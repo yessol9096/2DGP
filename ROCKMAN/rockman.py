@@ -71,14 +71,19 @@ class IdleState:
     @staticmethod
     def do(rockman):
         rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
-
+        rockman.x = clamp(0, rockman.x, rockman.bg.w)
+        rockman.y = clamp(0, rockman.y, rockman.bg.h)
+        rockman.off_set()
 
     @staticmethod
     def draw(rockman):
+        x_left_offset = min(0, rockman.x - rockman.canvas_width // 2)
+        x_right_offset = max(0, rockman.x - rockman.bg.w + rockman.canvas_width // 2)
+        x_offset = x_left_offset + x_right_offset
         if rockman.dir == 1:
-            rockman.image.clip_draw(0, 240, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(0, 240, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
         else:
-            rockman.image.clip_draw(0, 200, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(0, 200, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
 
 class RunState:
@@ -103,15 +108,17 @@ class RunState:
     def do(rockman):
         rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
         rockman.x += rockman.velocity * game_framework.frame_time
-        rockman.x = clamp(25, rockman.x, 1600 - 25)
+        rockman.x = clamp(0, rockman.x, rockman.bg.w)
+        rockman.y = clamp(0, rockman.y, rockman.bg.h)
+        rockman.off_set()
 
 
     @staticmethod
     def draw(rockman):
         if rockman.dir == 1:
-            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 240, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 240, 40, 40, rockman.canvas_width // 2 + rockman.x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
         else:
-            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 200, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 200, 40, 40, rockman.canvas_width // 2 + rockman.x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
 
 class Idle_attackState:
@@ -136,13 +143,17 @@ class Idle_attackState:
     @staticmethod
     def do(rockman):
         rockman.x = clamp(25, rockman.x, 1600 - 25)
-
+        rockman.x = clamp(0, rockman.x, rockman.bg.w)
+        rockman.y = clamp(0, rockman.y, rockman.bg.h)
     @staticmethod
     def draw(rockman):
+        x_left_offset = min(0, rockman.x - rockman.canvas_width // 2)
+        x_right_offset = max(0, rockman.x - rockman.bg.w + rockman.canvas_width // 2)
+        x_offset = x_left_offset + x_right_offset
         if rockman.dir == 1:
-            rockman.image.clip_draw(0, 160, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(0, 160, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
         else:
-            rockman.image.clip_draw(0, 120, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(0, 120, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
 class Run_attackState:
 
@@ -168,15 +179,19 @@ class Run_attackState:
     def do(rockman):
         rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
         rockman.x += rockman.velocity * game_framework.frame_time
-        rockman.x = clamp(25, rockman.x, 1600 - 25)
+        rockman.x = clamp(0, rockman.x, rockman.bg.w)
+        rockman.y = clamp(0, rockman.y, rockman.bg.h)
 
     @staticmethod
     def draw(rockman):
+        x_left_offset = min(0, rockman.x - rockman.canvas_width // 2)
+        x_right_offset = max(0, rockman.x - rockman.bg.w + rockman.canvas_width // 2)
+        x_offset = x_left_offset + x_right_offset
         if rockman.dir == 1:
-            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 160, 40, 40, rockman.x, rockman.y, CHAR_SIZE,
+            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 160, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE,
                                     CHAR_SIZE)
         else:
-            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 120, 40, 40, rockman.x, rockman.y, CHAR_SIZE,
+            rockman.image.clip_draw(40 + int(rockman.frame) * 40, 120, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE,
                                     CHAR_SIZE)
 
 class JumpState:
@@ -209,7 +224,8 @@ class JumpState:
         rockman.jump_time += game_framework.frame_time
         rockman.y += JUMP_SPEED_PPS * now_time - FALL_SPEED_PPS*0.98 * now_time * now_time
         rockman.x += rockman.velocity * game_framework.frame_time
-        rockman.x = clamp(25, rockman.x, 1600 - 25)
+        rockman.x = clamp(0, rockman.x, rockman.bg.w)
+        rockman.y = clamp(0, rockman.y, rockman.bg.h)
         if(rockman.y < 350) :
             rockman.y = 350
             rockman.add_event(LANDING)
@@ -218,10 +234,13 @@ class JumpState:
     @staticmethod
     def draw(rockman):
         global frame_y
+        x_left_offset = min(0, rockman.x - rockman.canvas_width // 2)
+        x_right_offset = max(0, rockman.x - rockman.bg.w + rockman.canvas_width // 2)
+        x_offset = x_left_offset + x_right_offset
         if rockman.dir == 1:
-            rockman.image.clip_draw(160, 240 + frame_y, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(160, 240 + frame_y, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
         else:
-            rockman.image.clip_draw(160, 200 + frame_y, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(160, 200 + frame_y, 40, 40, rockman.canvas_width // 2 + x_offset, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
 
 
@@ -254,13 +273,23 @@ class Rockman:
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
         self.jump_time = 0
+        self.canvas_width = get_canvas_width()
+        self.canvas_height = get_canvas_height()
+        self.x_offset = 0
 
+
+    def off_set(self):
+        x_left_offset = min(0, self.x - self.canvas_width // 2)
+        x_right_offset = max(0, self.x - self.bg.w + self.canvas_width // 2)
+        self.x_offset = x_left_offset + x_right_offset
 
     def set_background(self, bg):
         self.bg = bg
+        self.x = self.bg.w / 10
+        self.y = self.bg.h / 2
 
     def attack(self):
-        bullet = Bullet(self.x, self.y, self.dir)
+        bullet = Bullet(self.x_offset, self.y, self.dir)
         game_world.add_object(bullet, 1)
 
     def ghost(self):
@@ -282,8 +311,6 @@ class Rockman:
             self.cur_state.exit(self, event)
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
-        #self.x = clamp(0, self.x, self.bg.w)
-        #self.y = clamp(0, self.y, self.bg.h)
 
     def draw(self):
         self.cur_state.draw(self)
