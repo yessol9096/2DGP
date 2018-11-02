@@ -12,6 +12,16 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
+JUMP_SPEED_KMPH = 5  # Km / Hour
+JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
+JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
+JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
+
+FALL_SPEED_KMPH = 10  # Km / Hour
+FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
+FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
+FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
+
 CHAR_SIZE = 120
 
 # Rockman Action Speed
@@ -23,7 +33,7 @@ FRAMES_PER_ACTION = 5
 
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE, ATTACK, ATTACK_OFF, JUMP = range(8)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE, ATTACK, ATTACK_OFF, JUMP, LANDING = range(9)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -94,6 +104,7 @@ class RunState:
         rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
         rockman.x += rockman.velocity * game_framework.frame_time
         rockman.x = clamp(25, rockman.x, 1600 - 25)
+
 
     @staticmethod
     def draw(rockman):
@@ -169,8 +180,12 @@ class Run_attackState:
                                     CHAR_SIZE)
 
 class JumpState:
+    global frame_x
+
     @staticmethod
     def enter(rockman, event):
+        global frame_y
+        frame_y = 0
         if event == RIGHT_DOWN:
             rockman.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
@@ -179,29 +194,34 @@ class JumpState:
             rockman.velocity -= RUN_SPEED_PPS
         elif event == LEFT_UP:
             rockman.velocity += RUN_SPEED_PPS
-        rockman.frame = 0
+        if event == ATTACK:
+            rockman.attack()
+            frame_y = -80
+        start_time = get_time()
 
     @staticmethod
     def exit(rockman, event):
         pass
 
     @staticmethod
-    def jump(rockman):
-        gap_time = 0.1
-        game_framework.frame_time
-
-    @staticmethod
     def do(rockman):
-        rockman.frame = (rockman.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        now_time = rockman.jump_time
+        rockman.jump_time += game_framework.frame_time
+        rockman.y += JUMP_SPEED_PPS * now_time - FALL_SPEED_PPS*0.98 * now_time * now_time
         rockman.x += rockman.velocity * game_framework.frame_time
         rockman.x = clamp(25, rockman.x, 1600 - 25)
+        if(rockman.y < 350) :
+            rockman.y = 350
+            rockman.add_event(LANDING)
+            rockman.jump_time = 0
 
     @staticmethod
     def draw(rockman):
+        global frame_y
         if rockman.dir == 1:
-            rockman.image.clip_draw(160, 240, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(160, 240 + frame_y, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
         else:
-            rockman.image.clip_draw(160, 200, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
+            rockman.image.clip_draw(160, 200 + frame_y, 40, 40, rockman.x, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
 
 
@@ -212,10 +232,10 @@ class JumpState:
 
 next_state_table = {
     IdleState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState, ATTACK: Idle_attackState, ATTACK_OFF: IdleState, JUMP: JumpState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, SPACE: RunState, ATTACK: Run_attackState, ATTACK_OFF: RunState},
-    Idle_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: IdleState,ATTACK: Idle_attackState},
-    Run_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: RunState, ATTACK: Run_attackState},
-    JumpState: {RIGHT_UP: JumpState, LEFT_UP: JumpState, RIGHT_DOWN: JumpState, LEFT_DOWN: JumpState, ATTACK: JumpState, ATTACK_OFF: JumpState, JUMP: JumpState}
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, SPACE: RunState, ATTACK: Run_attackState, ATTACK_OFF: RunState, JUMP: JumpState},
+    Idle_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: IdleState,ATTACK: Idle_attackState, JUMP: JumpState},
+    Run_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: RunState, ATTACK: Run_attackState, JUMP: JumpState},
+    JumpState: {RIGHT_UP: JumpState, LEFT_UP: JumpState, RIGHT_DOWN: JumpState, LEFT_DOWN: JumpState, ATTACK: JumpState, ATTACK_OFF: JumpState, JUMP: JumpState, LANDING: IdleState}
 }
 
 class Rockman:
@@ -233,6 +253,7 @@ class Rockman:
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
+        self.jump_time = 0
 
 
     def set_background(self, bg):
