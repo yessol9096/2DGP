@@ -21,3 +21,4 @@ class Airman_background:
         self.set_center_object = player
 
 
+
