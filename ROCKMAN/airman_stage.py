@@ -8,6 +8,7 @@ import game_world
 
 from rockman import Rockman
 from airman_background import Airman_background
+from ariman_enemy import Tikky
 
 
 name = "MainState"
@@ -17,11 +18,14 @@ player = None
 def enter():
     global player
     player = Rockman()
+    tikky = Tikky()
     background = Airman_background()
     background.set_center_object(player)
+
     player.set_background(background)
     game_world.add_object(background, 0)
     game_world.add_object(player, 1)
+    game_world.add_object(tikky, 1)
 
 
 def exit():

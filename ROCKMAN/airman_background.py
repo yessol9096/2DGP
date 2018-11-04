@@ -8,13 +8,21 @@ class Airman_background:
         self.w = self.image.w
         self.h = self.image.h
         self.speed = 0
+        self.left = 0
+        self.bottom = 483
 
     def update(self):
-        self.left = clamp(0, int(self.set_center_object.x) -
-                          self.canvas_width // 2, self.w - self.canvas_width)
+        self.left = clamp(0, int(self.set_center_object.x) - self.canvas_width // 2, self.w - self.canvas_width)
+        if (self.left >= 2557 - 254 and self.bottom >= 0):
+            self.left = 2557 - 254
+            self.bottom -= 1
+            if(self.bottom < 0):
+                self.bottom = 0
+        if(self.bottom == 0):
+            self.left = clamp(2557 - 254 ,int(self.set_center_object.x) - self.canvas_width // 2, self.w - self.canvas_width)
 
     def draw(self):
-        self.image.clip_draw_to_origin(self.left,483,254,237,0,0,self.canvas_width,
+        self.image.clip_draw_to_origin(self.left,self.bottom,254,237,400,350,self.canvas_width,
                                        self.canvas_height)
 
     def set_center_object(self, player):

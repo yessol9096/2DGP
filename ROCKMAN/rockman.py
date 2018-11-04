@@ -1,7 +1,7 @@
 import game_framework
 from pico2d import *
 from bullet import Bullet
-from ghost import Ghost
+
 import game_world
 
 # Rockman Run Speed
@@ -280,15 +280,6 @@ class Rockman:
     def attack(self):
         bullet = Bullet(self.bullet_x, self.y, self.dir)
         game_world.add_object(bullet, 1)
-
-    def ghost(self):
-        global ghost
-        ghost = Ghost(self.x, self.y, self.dir*3)
-        game_world.add_object(ghost, 1)
-
-    def delete_ghost(self):
-        global ghost
-        game_world.remove_object(ghost)
 
     def add_event(self, event):
         self.event_que.insert(0, event)
