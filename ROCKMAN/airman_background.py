@@ -22,11 +22,12 @@ class Airman_background:
             self.left = clamp(2557 - 254 ,int(self.set_center_object.x) - self.canvas_width // 2, self.w - self.canvas_width)
 
     def draw(self):
-        self.image.clip_draw_to_origin(self.left,self.bottom,254,237,400,350,self.canvas_width,
+        self.image.clip_draw_to_origin(self.left,self.bottom,254,237,0,0,self.canvas_width,
                                        self.canvas_height)
 
     def set_center_object(self, player):
         self.set_center_object = player
+
 
 
 

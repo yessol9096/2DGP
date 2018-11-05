@@ -7,7 +7,7 @@ import game_world
 # Rockman Run Speed
 # fill expressions correctly
 PIXEL_PER_METER = (10.0 / 0.3)
-RUN_SPEED_KMPH = 20.0
+RUN_SPEED_KMPH = 50.0
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -108,6 +108,7 @@ class RunState:
         rockman.x = clamp(0, rockman.x, rockman.bg.w)
         rockman.y = clamp(0, rockman.y, rockman.bg.h)
         rockman.off_set()
+
 
 
     @staticmethod
@@ -229,6 +230,54 @@ class JumpState:
         else:
             rockman.image.clip_draw(160, 200 + frame_y, 40, 40, rockman.canvas_width // 2 + rockman.off_set_x, rockman.y, CHAR_SIZE, CHAR_SIZE)
 
+class StartState:
+    global frame_x
+
+    @staticmethod
+    def enter(rockman, event):
+        global frame_y
+        frame_y = 0
+        if event == RIGHT_DOWN:
+            rockman.velocity += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            rockman.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            rockman.velocity += RUN_SPEED_PPS
+        if event == ATTACK:
+            rockman.attack()
+            frame_y = -80
+        start_time = get_time()
+
+    @staticmethod
+    def exit(rockman, event):
+        pass
+
+    @staticmethod
+    def do(rockman):
+        now_time = rockman.jump_time
+        rockman.jump_time += game_framework.frame_time
+        rockman.y += JUMP_SPEED_PPS * now_time - FALL_SPEED_PPS * 0.98 * now_time * now_time
+        rockman.x += rockman.velocity * game_framework.frame_time
+        rockman.x = clamp(0, rockman.x, rockman.bg.w)
+        rockman.y = clamp(0, rockman.y, rockman.bg.h)
+        rockman.off_set()
+        if (rockman.y < 350):
+            rockman.y = 350
+            rockman.add_event(LANDING)
+            rockman.jump_time = 0
+
+    @staticmethod
+    def draw(rockman):
+        global frame_y
+        if rockman.dir == 1:
+            rockman.image.clip_draw(160, 240 + frame_y, 40, 40, rockman.canvas_width // 2 + rockman.off_set_x,
+                                        rockman.y, CHAR_SIZE, CHAR_SIZE)
+        else:
+            rockman.image.clip_draw(160, 200 + frame_y, 40, 40, rockman.canvas_width // 2 + rockman.off_set_x,
+                                        rockman.y, CHAR_SIZE, CHAR_SIZE)
+
 
 
 
@@ -237,6 +286,7 @@ class JumpState:
 
 
 next_state_table = {
+    StartState: {RIGHT_UP: StartState, LEFT_UP: StartState, RIGHT_DOWN: StartState, LEFT_DOWN: StartState, SPACE: StartState, ATTACK: StartState, ATTACK_OFF: StartState, JUMP: StartState, LANDING: IdleState},
     IdleState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState, ATTACK: Idle_attackState, ATTACK_OFF: IdleState, JUMP: JumpState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, SPACE: RunState, ATTACK: Run_attackState, ATTACK_OFF: RunState, JUMP: JumpState},
     Idle_attackState: {RIGHT_UP: Idle_attackState, LEFT_UP: Idle_attackState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, ATTACK_OFF: IdleState,ATTACK: Idle_attackState, JUMP: JumpState},
@@ -247,7 +297,7 @@ next_state_table = {
 class Rockman:
 
     def __init__(self):
-        self.x, self.y = 800 // 2, 350
+        self.x, self.y =800 // 2, 350
         # Boy is only once created, so instance image loading is fine
         self.image = load_image('resource/rockman/rockman240x280.png')
         self.font = load_font('ENCR10B.TTF', 16)
@@ -257,7 +307,7 @@ class Rockman:
         self.velocity = 0
         self.frame = 0
         self.event_que = []
-        self.cur_state = IdleState
+        self.cur_state = StartState
         self.cur_state.enter(self, None)
         self.jump_time = 0
         self.canvas_width = get_canvas_width()
@@ -269,6 +319,7 @@ class Rockman:
     def off_set(self):
         x_left_offset = min(0, self.x - self.canvas_width // 2)
         x_right_offset = max(0, self.x - self.bg.w + self.canvas_width // 2)
+
         self.off_set_x = x_left_offset + x_right_offset
         self.bullet_x = self.canvas_width // 2 + self.off_set_x
 
@@ -291,6 +342,8 @@ class Rockman:
             self.cur_state.exit(self, event)
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
+
+
 
     def draw(self):
         self.cur_state.draw(self)
