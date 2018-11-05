@@ -3,6 +3,7 @@ from pico2d import *
 from bullet import Bullet
 
 import game_world
+from sound_manager import *
 
 # Rockman Run Speed
 # fill expressions correctly
@@ -22,7 +23,14 @@ FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
 FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
 FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
 
+ENTER_SPEED_KMPH = 100.0  # Km / Hour
+ENTER_SPEED_MPM = (ENTER_SPEED_KMPH * 1000.0 / 60.0)
+ENTER_SPEED_MPS = (ENTER_SPEED_MPM / 60.0)
+ENTER_SPEED_PPS = (ENTER_SPEED_MPS * PIXEL_PER_METER)
+
 CHAR_SIZE = 120
+ENTER_EFFECT_YSIZE = 100
+ENTER_EFFECT_XSIZE = ENTER_EFFECT_YSIZE * 0.85
 
 # Rockman Action Speed
 # fill expressions correctly
@@ -232,7 +240,6 @@ class JumpState:
 
 class StartState:
     global frame_x
-
     @staticmethod
     def enter(rockman, event):
         global frame_y
@@ -256,33 +263,16 @@ class StartState:
 
     @staticmethod
     def do(rockman):
-        now_time = rockman.jump_time
-        rockman.jump_time += game_framework.frame_time
-        rockman.y += JUMP_SPEED_PPS * now_time - FALL_SPEED_PPS * 0.98 * now_time * now_time
-        rockman.x += rockman.velocity * game_framework.frame_time
-        rockman.x = clamp(0, rockman.x, rockman.bg.w)
-        rockman.y = clamp(0, rockman.y, rockman.bg.h)
-        rockman.off_set()
-        if (rockman.y < 350):
-            rockman.y = 350
+        if (rockman.y > 350):
+            rockman.y -= ENTER_SPEED_PPS * game_framework.frame_time
+        if(rockman.y <= 350):
             rockman.add_event(LANDING)
-            rockman.jump_time = 0
-
+            rockman.y = 350
+        rockman.off_set()
     @staticmethod
     def draw(rockman):
         global frame_y
-        if rockman.dir == 1:
-            rockman.image.clip_draw(160, 240 + frame_y, 40, 40, rockman.canvas_width // 2 + rockman.off_set_x,
-                                        rockman.y, CHAR_SIZE, CHAR_SIZE)
-        else:
-            rockman.image.clip_draw(160, 200 + frame_y, 40, 40, rockman.canvas_width // 2 + rockman.off_set_x,
-                                        rockman.y, CHAR_SIZE, CHAR_SIZE)
-
-
-
-
-
-
+        rockman.start_image.clip_draw(0, 0, 30, 35, rockman.canvas_width // 2 + rockman.off_set_x, rockman.y, ENTER_EFFECT_XSIZE, ENTER_EFFECT_YSIZE)
 
 
 next_state_table = {
@@ -295,11 +285,15 @@ next_state_table = {
 }
 
 class Rockman:
-
+    start_image = None
+    image = None
     def __init__(self):
         self.x, self.y =800 // 2, 350
         # Boy is only once created, so instance image loading is fine
-        self.image = load_image('resource/rockman/rockman240x280.png')
+        if(Rockman.image == None):
+            self.image = load_image('resource/rockman/rockman240x280.png')
+        if (Rockman.start_image == None):
+            self.start_image = load_image('resource/rockman/enter_effect_90x35.png')
         self.font = load_font('ENCR10B.TTF', 16)
         self.canvas_width = 800
         self.canvas_height = 700
@@ -326,7 +320,7 @@ class Rockman:
     def set_background(self, bg):
         self.bg = bg
         self.x = self.bg.w / 15
-        self.y = 350
+        self.y = 900
 
     def attack(self):
         bullet = Bullet(self.bullet_x, self.y, self.dir)

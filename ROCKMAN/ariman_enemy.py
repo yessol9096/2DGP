@@ -27,7 +27,7 @@ class Tikky:
     def set_xy(self,x,y):
         self.x, self.y = x, y
     def update(self):
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 15
+        self.frame = (self.frame + 15 * ACTION_PER_TIME * game_framework.frame_time) % 15
         #self.off_set()
 
     def set_background(self, bg):
@@ -40,7 +40,7 @@ class Tikky:
 
     def draw(self):
         sx = self.x - (self.bg.left*3)
-        self.image.clip_draw(self.left, int(self.frame) * 104, 80, 104, sx, self.y, 200, 250)
+        self.image.clip_draw(0, int(self.frame) * 104, 80, 104, sx, self.y, 200, 250)
 
 
 class Lightning_lord:
@@ -52,7 +52,7 @@ class Lightning_lord:
         self.w = self.image.w
         self.h = self.image.h
         self.speed = 0
-        self.frame = 1
+        self.frame = random.randint(0,1)
         self.left = 0
         self.x = 0
         self.y = 0
@@ -74,7 +74,7 @@ class Lightning_lord:
 
 
     def update(self):
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 1
+        self.frame = (self.frame + 2 * 0.5 * game_framework.frame_time) % 2
 
         #self.off_set()
 
@@ -93,9 +93,38 @@ class Lightning_lord:
     def draw(self):
         self.circle()
         sx = self.x - (self.bg.left*3)
-        print(sx)
-        self.image.clip_draw(0, 0, 40, 32, self.x - (self.bg.left*3), self.y, 100, 100)
+        self.image.clip_draw( int(self.frame) *40, 0, 40, 32, self.x - (self.bg.left*3), self.y, 100, 100)
+
+class Fan_fined:
+
+    def __init__(self):
+        self.image = load_image('resource/enemy/Fan_Fined.png')
+        self.canvas_width = get_canvas_width()
+        self.canvas_height = get_canvas_height()
+        self.w = self.image.w
+        self.h = self.image.h
+        self.speed = 0
+        self.frame = random.randint(0,8)
+        self.left = 0
+        self.x = 0
+        self.y = 0
+        self.off_set_x = 0
+
+    def set_xy(self,x,y):
+        self.x, self.y = x, y
+
+    def update(self):
+        self.frame = (self.frame + 8* ACTION_PER_TIME * game_framework.frame_time) % 8
+
+    def set_background(self, bg):
+        self.bg = bg
 
 
+    def set_center_object(self, player):
+        self.set_center_object = player
+
+    def draw(self):
+        sx = self.x - (self.bg.left*3)
+        self.image.clip_draw(int(self.frame) * 40, 0, 40, 31, sx, self.y, 100, 90)
 
 
