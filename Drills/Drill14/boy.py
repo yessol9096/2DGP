@@ -121,11 +121,14 @@ class Boy:
         self.event_que = []
         self.cur_state = WalkingState
         self.cur_state.enter(self, None)
-
+        self.count_ball = 0
 
     def get_bb(self):
         self.fx, self.fy = self.x - self.bg.window_left, self.y - self.bg.window_bottom
         return self.fx - 50, self.fy - 50, self.fx + 50, self.fy + 50
+
+    def count_ball(self):
+        self.count_ball += 1
 
     def set_background(self, bg):
         self.bg = bg
@@ -147,7 +150,9 @@ class Boy:
         self.cur_state.draw(self)
 
         self.font.draw(self.fx - 60, self.fy - 50, '(%5d, %5d)' % (self.x, self.y), (255, 255, 0))
+        self.font.draw(self.fx  , self.fy - 70, '(%d)' % (self.count_ball), (255, 255, 0))
         draw_rectangle(*self.get_bb())
+
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
