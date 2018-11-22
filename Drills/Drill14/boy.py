@@ -153,9 +153,9 @@ class Boy:
     def draw(self):
         self.cur_state.draw(self)
 
-        self.font.draw(self.fx - 60, self.fy - 50, '(%5d, %5d)' % (self.x, self.y), (255, 255, 0))
-        self.font.draw(self.fx  , self.fy - 70, '(%d)' % (self.count_ball), (255, 255, 0))
-        draw_rectangle(*self.get_bb())
+        #self.font.draw(self.fx - 60, self.fy - 50, '(%5d, %5d)' % (self.x, self.y), (255, 255, 0))
+        self.font.draw(self.fx - 15 , self.fy + 70, '(%d)' % (self.count_ball), (255, 255, 0))
+        #draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
