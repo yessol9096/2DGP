@@ -127,9 +127,6 @@ class Boy:
         self.fx, self.fy = self.x - self.bg.window_left, self.y - self.bg.window_bottom
         return self.fx - 50, self.fy - 50, self.fx + 50, self.fy + 50
 
-    def count_ball(self):
-        self.count_ball += 1
-
     def set_background(self, bg):
         self.bg = bg
         self.x = self.bg.w / 2
