@@ -123,6 +123,13 @@ class Boy:
         self.cur_state.enter(self, None)
         self.count_ball = 0
 
+        self.eat_sound = load_wav('pickup.wav')
+        self.eat_sound.set_volume(32)
+
+    def eat(self, ball):
+        self.count_ball += 1
+        self.eat_sound.play()
+
     def get_bb(self):
         self.fx, self.fy = self.x - self.bg.window_left, self.y - self.bg.window_bottom
         return self.fx - 50, self.fy - 50, self.fx + 50, self.fy + 50
